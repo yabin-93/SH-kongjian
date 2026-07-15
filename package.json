@@ -1,0 +1,21 @@
+{
+  "name": "mrstage-p0-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:p0": "playwright test tests/p0",
+    "test:chromium": "playwright test --project=chromium",
+    "test:mutations": "cross-env RUN_MUTATION_TESTS=true playwright test tests/p0",
+    "test:list": "playwright test --list",
+    "typecheck": "tsc --noEmit",
+    "report": "playwright show-report output/playwright/report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "@types/node": "^24.0.0",
+    "cross-env": "^10.0.0",
+    "dotenv": "17.4.2",
+    "typescript": "7.0.2"
+  }
+}
