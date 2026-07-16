@@ -36,6 +36,7 @@ pipeline {
     stage('Install') {
       steps {
         dir('e2e') {
+          bat 'npm run clean'
           bat 'npm ci'
           bat 'npm run verify:env'
           bat 'npx playwright install chromium'
