@@ -1,0 +1,24 @@
+{
+  "name": "mrstage-p0-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Maintainable P0 Web UI E2E tests for the MrStage admin portal",
+  "engines": {
+    "node": ">=24.17.0 <25"
+  },
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('output', { recursive: true, force: true })\"",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "tsx --test tests/unit/*.test.ts",
+    "test:list": "playwright test --list",
+    "test:smoke": "node --env-file-if-exists=.env ./node_modules/@playwright/test/cli.js test --project=smoke",
+    "verify:env": "tsx scripts/verify-env.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "@types/node": "24.10.1",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,33 @@
+name: E2E static checks
+
+on:
+  pull_request:
+    paths:
+      - 'e2e/**'
+      - '.github/workflows/e2e-static.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'e2e/**'
+      - '.github/workflows/e2e-static.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-static:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: e2e
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.17.0
+          cache: npm
+          cache-dependency-path: e2e/package-lock.json
+      - run: npm ci
+      - run: npm run test:unit
+      - run: npm run typecheck
+      - run: npm run test:list

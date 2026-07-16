@@ -1,0 +1,19 @@
+export interface Credentials {
+  username: string;
+  password: string;
+}
+
+function required(name: string): string {
+  const value = process.env[name]?.trim();
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+  return value;
+}
+
+export function getAdminCredentials(): Credentials {
+  return {
+    username: required('E2E_ADMIN_USERNAME'),
+    password: required('E2E_ADMIN_PASSWORD'),
+  };
+}

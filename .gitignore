@@ -1,7 +1,3 @@
-node_modules/
-.env
-output/
-.playwright-cli/
 .codex/
-playwright-report/
-test-results/
+.playwright-cli/
+output/

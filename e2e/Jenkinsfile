@@ -1,0 +1,79 @@
+pipeline {
+  agent { label 'windows-playwright' }
+
+  tools {
+    nodejs 'nodejs-24.17.0'
+  }
+
+  options {
+    timestamps()
+    disableConcurrentBuilds()
+    timeout(time: 10, unit: 'MINUTES')
+    buildDiscarder(logRotator(daysToKeepStr: '30', numToKeepStr: '30', artifactDaysToKeepStr: '30'))
+    skipDefaultCheckout(true)
+  }
+
+  triggers {
+    cron('TZ=Asia/Shanghai\nH 2 * * *')
+  }
+
+  parameters {
+    string(name: 'BASE_URL', defaultValue: 'https://pt-test.mrstage.com/', description: 'Target test environment')
+  }
+
+  environment {
+    CI = 'true'
+    E2E_RUN_ID = "${JOB_NAME}-${BUILD_NUMBER}"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Install') {
+      steps {
+        dir('e2e') {
+          bat 'npm ci'
+          bat 'npm run verify:env'
+          bat 'npx playwright install chromium'
+        }
+      }
+    }
+
+    stage('Static checks') {
+      steps {
+        dir('e2e') {
+          bat 'npm run test:unit'
+          bat 'npm run typecheck'
+          bat 'npm run test:list'
+        }
+      }
+    }
+
+    stage('P0 smoke') {
+      steps {
+        withCredentials([
+          usernamePassword(
+            credentialsId: '7d986c99-c3db-4126-9d02-3ade50f4777b',
+            usernameVariable: 'E2E_ADMIN_USERNAME',
+            passwordVariable: 'E2E_ADMIN_PASSWORD'
+          )
+        ]) {
+          dir('e2e') {
+            bat 'npm run test:smoke'
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      junit allowEmptyResults: true, testResults: 'e2e/output/results/**/junit.xml'
+      archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e/output/**/*', fingerprint: true
+    }
+  }
+}
