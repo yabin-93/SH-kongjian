@@ -74,6 +74,20 @@ pipeline {
   post {
     always {
       junit allowEmptyResults: true, testResults: 'e2e/output/results/**/junit.xml'
+      script {
+        if (fileExists('e2e/output/allure-results')) {
+          allure(
+            commandline: 'allure',
+            includeProperties: false,
+            jdk: '',
+            reportBuildPolicy: 'ALWAYS',
+            resultPolicy: 'LEAVE_AS_IS',
+            results: [[path: 'e2e/output/allure-results']]
+          )
+        } else {
+          echo 'No Allure results found; skipping Allure report.'
+        }
+      }
       archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e/output/**/*', fingerprint: true
     }
   }

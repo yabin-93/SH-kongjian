@@ -20,6 +20,7 @@ export default defineConfig({
     ['html', { outputFolder: `output/html/${runId}`, open: 'never' }],
     ['junit', { outputFile: `output/results/${runId}/junit.xml` }],
     ['json', { outputFile: `output/results/${runId}/results.json` }],
+    ['allure-playwright', { resultsDir: 'output/allure-results' }],
   ],
   use: {
     baseURL: process.env.BASE_URL ?? 'https://pt-test.mrstage.com/',
