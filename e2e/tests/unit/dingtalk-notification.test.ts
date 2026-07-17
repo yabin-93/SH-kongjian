@@ -3,6 +3,8 @@ import test from 'node:test';
 
 import { buildDingTalkMarkdown, summarizePlaywrightReport } from '../../support/dingtalk-notification.js';
 
+const keyword = '\u81ea\u52a8\u5316\u6d4b\u8bd5';
+
 test('summarizePlaywrightReport converts Playwright stats into notification totals', () => {
   const summary = summarizePlaywrightReport({
     stats: {
@@ -40,14 +42,14 @@ test('buildDingTalkMarkdown includes keyword, result counts and Jenkins links', 
       buildResult: 'SUCCESS',
       buildUrl: 'https://jenkins.example/job/p0-e2e-smoke/12/',
       jobName: 'p0-e2e-smoke',
-      keyword: '自动化测试',
+      keyword,
     },
   );
 
-  assert.equal(markdown.title, '自动化测试结果通知');
-  assert.match(markdown.text, /### 自动化测试结果通知/);
-  assert.match(markdown.text, /- 总数：4/);
-  assert.match(markdown.text, /- 通过：4/);
+  assert.equal(markdown.title, `${keyword}\u7ed3\u679c\u901a\u77e5`);
+  assert.match(markdown.text, new RegExp(`### ${keyword}\u7ed3\u679c\u901a\u77e5`));
+  assert.match(markdown.text, /- \u603b\u6570: 4/);
+  assert.match(markdown.text, /- \u901a\u8fc7: 4/);
   assert.match(markdown.text, /Allure Report/);
   assert.match(markdown.text, /https:\/\/jenkins\.example\/job\/p0-e2e-smoke\/12\/allure\//);
   assert.match(markdown.text, /https:\/\/jenkins\.example\/job\/p0-e2e-smoke\/12\/console/);

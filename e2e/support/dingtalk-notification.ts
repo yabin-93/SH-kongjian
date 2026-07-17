@@ -3,6 +3,20 @@ import { join } from 'node:path';
 
 import { resolveRunId } from './run-context.js';
 
+const DEFAULT_KEYWORD = '\u81ea\u52a8\u5316\u6d4b\u8bd5';
+const RESULT_NOTICE = '\u7ed3\u679c\u901a\u77e5';
+const LABEL_PROJECT = '\u9879\u76ee';
+const LABEL_BUILD = '\u6784\u5efa';
+const LABEL_ENVIRONMENT = '\u73af\u5883';
+const LABEL_STATUS = '\u72b6\u6001';
+const LABEL_TOTAL = '\u603b\u6570';
+const LABEL_PASSED = '\u901a\u8fc7';
+const LABEL_FAILED = '\u5931\u8d25';
+const LABEL_FLAKY = '\u4e0d\u7a33\u5b9a';
+const LABEL_SKIPPED = '\u8df3\u8fc7';
+const LABEL_DURATION = '\u8017\u65f6';
+const LABEL_BUILD_LOG = '\u6784\u5efa\u65e5\u5fd7';
+
 interface PlaywrightStats {
   expected?: number;
   unexpected?: number;
@@ -64,34 +78,35 @@ export function buildDingTalkMarkdown(summary: TestSummary, context: Notificatio
   title: string;
   text: string;
 } {
-  const keyword = context.keyword?.trim() || '自动化测试';
+  const keyword = context.keyword?.trim() || DEFAULT_KEYWORD;
   const status = context.buildResult?.trim() || (summary.failed > 0 ? 'FAILURE' : 'SUCCESS');
   const jobName = context.jobName?.trim() || 'p0-e2e-smoke';
   const buildNumber = context.buildNumber?.trim() || '-';
   const baseUrl = context.baseUrl?.trim() || 'https://pt-test.mrstage.com/';
   const buildUrl = context.buildUrl?.trim();
   const allureUrl = buildUrl ? `${buildUrl.replace(/\/$/, '')}/allure/` : '';
+  const title = `${keyword}${RESULT_NOTICE}`;
 
   const lines = [
-    `### ${keyword}结果通知`,
+    `### ${title}`,
     '',
-    `- 项目：${jobName}`,
-    `- 构建：#${buildNumber}`,
-    `- 环境：${baseUrl}`,
-    `- 状态：${status}`,
-    `- 总数：${summary.total}`,
-    `- 通过：${summary.passed}`,
-    `- 失败：${summary.failed}`,
-    `- 不稳定：${summary.flaky}`,
-    `- 跳过：${summary.skipped}`,
-    `- 耗时：${summary.durationText}`,
+    `- ${LABEL_PROJECT}: ${jobName}`,
+    `- ${LABEL_BUILD}: #${buildNumber}`,
+    `- ${LABEL_ENVIRONMENT}: ${baseUrl}`,
+    `- ${LABEL_STATUS}: ${status}`,
+    `- ${LABEL_TOTAL}: ${summary.total}`,
+    `- ${LABEL_PASSED}: ${summary.passed}`,
+    `- ${LABEL_FAILED}: ${summary.failed}`,
+    `- ${LABEL_FLAKY}: ${summary.flaky}`,
+    `- ${LABEL_SKIPPED}: ${summary.skipped}`,
+    `- ${LABEL_DURATION}: ${summary.durationText}`,
   ];
 
   if (allureUrl) lines.push('', `[Allure Report](${allureUrl})`);
-  if (buildUrl) lines.push(`[构建日志](${buildUrl}console)`);
+  if (buildUrl) lines.push(`[${LABEL_BUILD_LOG}](${buildUrl}console)`);
 
   return {
-    title: `${keyword}结果通知`,
+    title,
     text: lines.join('\n'),
   };
 }

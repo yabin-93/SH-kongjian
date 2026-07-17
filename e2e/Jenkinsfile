@@ -23,7 +23,7 @@ pipeline {
 
   environment {
     CI = 'true'
-    DINGTALK_KEYWORD = '自动化测试'
+    DINGTALK_KEYWORD = "\u81EA\u52A8\u5316\u6D4B\u8BD5"
     E2E_RUN_ID = "${JOB_NAME}-${BUILD_NUMBER}"
   }
 
