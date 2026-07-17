@@ -9,7 +9,7 @@
   },
   "scripts": {
     "clean": "node -e \"require('node:fs').rmSync('output', { recursive: true, force: true })\"",
-    "notify:dingtalk": "tsx scripts/notify-dingtalk.ts",
+    "notify:dingtalk": "node --env-file-if-exists=.env ./node_modules/tsx/dist/cli.mjs scripts/notify-dingtalk.ts",
     "typecheck": "tsc --noEmit",
     "test:unit": "tsx --test tests/unit/*.test.ts",
     "test:list": "playwright test --list",
