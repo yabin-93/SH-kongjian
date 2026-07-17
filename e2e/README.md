@@ -129,6 +129,8 @@ npm run test:list
 ```powershell
 npx allure generate output/allure-results --clean -o output/allure-report
 npx allure open output/allure-report
+
+allure serve output\allure-results
 ```
 
 ## Playwright 配置
