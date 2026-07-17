@@ -23,6 +23,7 @@ pipeline {
 
   environment {
     CI = 'true'
+    DINGTALK_KEYWORD = '自动化测试'
     E2E_RUN_ID = "${JOB_NAME}-${BUILD_NUMBER}"
   }
 
@@ -86,6 +87,19 @@ pipeline {
           )
         } else {
           echo 'No Allure results found; skipping Allure report.'
+        }
+      }
+      script {
+        if (fileExists('e2e/output/results')) {
+          withCredentials([string(credentialsId: 'dingtalk-webhook', variable: 'DINGTALK_WEBHOOK')]) {
+            withEnv(["BUILD_RESULT=${currentBuild.currentResult}"]) {
+              dir('e2e') {
+                bat 'npm run notify:dingtalk'
+              }
+            }
+          }
+        } else {
+          echo 'No Playwright results found; skipping DingTalk notification.'
         }
       }
       archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e/output/**/*', fingerprint: true
