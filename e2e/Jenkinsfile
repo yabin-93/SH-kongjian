@@ -59,7 +59,7 @@ pipeline {
       steps {
         withCredentials([
           usernamePassword(
-            credentialsId: '7d986c99-c3db-4126-9d02-3ade50f4777b',
+            credentialsId: 'mrstage-e2e-admin',
             usernameVariable: 'E2E_ADMIN_USERNAME',
             passwordVariable: 'E2E_ADMIN_PASSWORD'
           )
